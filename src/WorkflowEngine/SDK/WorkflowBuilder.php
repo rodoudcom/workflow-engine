@@ -93,13 +93,58 @@ class WorkflowBuilder
         return $this;
     }
 
+    /**
+     * Add a job to the workflow - flexible method supporting multiple approaches
+     * 
+     * Usage examples:
+     * ->addJob('http', 'fetch_api', 'Fetch API Data', ['url' => 'https://api.example.com'])
+     * ->addJob('httpRequest', 'fetch_api', 'Fetch API Data', ['url' => 'https://api.example.com'])
+     * ->addJob(HttpNode::class, 'fetch_api', 'Fetch API Data', ['url' => 'https://api.example.com'])
+     * ->addJob(new HttpNode(['id' => 'fetch_api', 'name' => 'Fetch API Data', 'url' => 'https://api.example.com']))
+     * ->addJob(['type' => 'http', 'id' => 'fetch_api', 'name' => 'Fetch API Data', 'config' => ['url' => 'https://api.example.com']])
+     */
+    public function addJob($jobTypeOrClassOrInstance, string $id = null, string $name = null, array $config = []): self
+    {
+        if (!$this->workflow) {
+            throw new \Exception('No workflow created. Call create() or loadFromJson() first.');
+        }
+
+        $this->workflow->addJob($jobTypeOrClassOrInstance, $id, $name, $config);
+        return $this;
+    }
+
+    /**
+     * Add a job with async execution mode
+     */
+    public function addAsyncJob($jobTypeOrClassOrInstance, string $id = null, string $name = null, array $config = []): self
+    {
+        if (!$this->workflow) {
+            throw new \Exception('No workflow created. Call create() or loadFromJson() first.');
+        }
+
+        $this->workflow->addAsyncJob($jobTypeOrClassOrInstance, $id, $name, $config);
+        return $this;
+    }
+
+    /**
+     * Get available job types
+     */
+    public function getAvailableJobs(): array
+    {
+        if (!$this->workflow) {
+            throw new \Exception('No workflow created. Call create() or loadFromJson() first.');
+        }
+
+        return $this->workflow->getAvailableJobs();
+    }
+
     public function connect(string $fromNodeId, string $toNodeId, string $fromOutput = 'output', string $toInput = 'input'): self
     {
         $this->workflow->addConnection($fromNodeId, $toNodeId, $fromOutput, $toInput);
         return $this;
     }
 
-    public function execute(array $context = []): \App\WorkflowEngine\Interface\ExecutionInterface
+    public function execute(array $context = []): \Rodoud\WorkflowEngine\Interface\ExecutionInterface
     {
         if (!$this->workflow) {
             throw new \Exception('No workflow created. Call create() or loadFromJson() first.');

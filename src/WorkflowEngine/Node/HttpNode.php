@@ -4,6 +4,11 @@ namespace Rodoud\WorkflowEngine\Node;
 
 use Rodoud\WorkflowEngine\Core\AbstractNode;
 
+/**
+ * @Job(name="http", description="Make HTTP requests to external APIs")
+ * @Job(name="httpRequest", description="Make HTTP requests to external APIs")
+ * @Job(name="api", description="Make HTTP requests to external APIs")
+ */
 class HttpNode extends AbstractNode
 {
     protected string $type = 'http';

@@ -4,6 +4,11 @@ namespace Rodoud\WorkflowEngine\Node;
 
 use Rodoud\WorkflowEngine\Core\AbstractNode;
 
+/**
+ * @Job(name="code", description="Execute custom PHP code")
+ * @Job(name="script", description="Execute custom PHP code")
+ * @Job(name="php", description="Execute custom PHP code")
+ */
 class CodeNode extends AbstractNode
 {
     protected string $type = 'code';

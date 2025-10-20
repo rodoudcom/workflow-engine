@@ -6,9 +6,12 @@ use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
 use Rodoud\WorkflowEngine\Interface\ExecutionInterface;
 use Rodoud\WorkflowEngine\Interface\NodeInterface;
 use Rodoud\WorkflowEngine\Core\Workflow;
-use Rodoud\WorkflowEngine\Registry\NodeRegistry;
+use Rodoud\WorkflowEngine\Core\Execution;
 use Rodoud\WorkflowEngine\Execution\WorkflowExecutor;
 use Rodoud\WorkflowEngine\Execution\AsyncWorkflowExecutor;
+use Rodoud\WorkflowEngine\Execution\MixedWorkflowExecutor;
+use Rodoud\WorkflowEngine\Registry\NodeRegistry;
+use Rodoud\WorkflowEngine\Registry\JobRegistry;
 use Rodoud\WorkflowEngine\Config\WorkflowParser;
 use Rodoud\WorkflowEngine\Logger\WorkflowLogger;
 use Rodoud\WorkflowEngine\Context\WorkflowContext;
@@ -16,6 +19,7 @@ use Rodoud\WorkflowEngine\Context\WorkflowContext;
 class WorkflowEngine
 {
     protected NodeRegistry $registry;
+    protected JobRegistry $jobRegistry;
     protected WorkflowExecutor $executor;
     protected WorkflowParser $parser;
     protected WorkflowLogger $logger;
@@ -25,6 +29,7 @@ class WorkflowEngine
     {
         $this->config = array_merge($this->getDefaultConfig(), $config);
         $this->registry = new NodeRegistry();
+        $this->jobRegistry = new JobRegistry();
         $this->executor = new WorkflowExecutor(
             $this->config['redis'] ?? [],
             $this->config['async'] ?? false
@@ -36,6 +41,9 @@ class WorkflowEngine
         );
 
         $this->registerBuiltinNodes();
+        
+        // Set the job registry in Workflow class
+        Workflow::setJobRegistry($this->jobRegistry);
     }
 
     public function createWorkflow(string $id, string $name, string $description = ''): WorkflowInterface
@@ -131,6 +139,40 @@ class WorkflowEngine
     public function getNodeTypes(): array
     {
         return $this->registry->getNodeTypes();
+    }
+
+    /**
+     * Get available job types with descriptions
+     */
+    public function getAvailableJobs(): array
+    {
+        return $this->jobRegistry->getAllJobs();
+    }
+
+    /**
+     * Get job registry for advanced usage
+     */
+    public function getJobRegistry(): JobRegistry
+    {
+        return $this->jobRegistry;
+    }
+
+    /**
+     * Register a custom job type
+     */
+    public function registerJob(string $type, string $className): self
+    {
+        $this->jobRegistry->register($type, $className);
+        return $this;
+    }
+
+    /**
+     * Register a job class with auto-detection
+     */
+    public function registerJobClass(string $className): self
+    {
+        $this->jobRegistry->registerJobClass($className);
+        return $this;
     }
 
     public function createNode(string $type, array $config): NodeInterface

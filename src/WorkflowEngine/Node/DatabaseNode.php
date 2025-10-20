@@ -4,6 +4,11 @@ namespace Rodoud\WorkflowEngine\Node;
 
 use Rodoud\WorkflowEngine\Core\AbstractNode;
 
+/**
+ * @Job(name="database", description="Execute database operations")
+ * @Job(name="db", description="Execute database operations")
+ * @Job(name="sql", description="Execute database operations")
+ */
 class DatabaseNode extends AbstractNode
 {
     protected string $type = 'database';

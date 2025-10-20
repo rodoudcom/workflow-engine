@@ -4,6 +4,7 @@ namespace Rodoud\WorkflowEngine\Core;
 
 use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
 use Rodoud\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Registry\JobRegistry;
 
 class Workflow implements WorkflowInterface
 {
@@ -12,6 +13,7 @@ class Workflow implements WorkflowInterface
     protected string $description;
     protected array $nodes = [];
     protected array $connections = [];
+    protected static ?JobRegistry $jobRegistry = null;
 
     public function __construct(string $id, string $name, string $description = '')
     {
@@ -49,6 +51,137 @@ class Workflow implements WorkflowInterface
     {
         $this->nodes[$node->getId()] = $node;
         return $this;
+    }
+
+    /**
+     * Add a job to the workflow - flexible method supporting multiple approaches
+     * 
+     * Usage examples:
+     * ->addJob('http', 'fetch_api', 'Fetch API Data', ['url' => 'https://api.example.com'])
+     * ->addJob('httpRequest', 'fetch_api', 'Fetch API Data', ['url' => 'https://api.example.com'])
+     * ->addJob(HttpNode::class, 'fetch_api', 'Fetch API Data', ['url' => 'https://api.example.com'])
+     * ->addJob(new HttpNode(['id' => 'fetch_api', 'name' => 'Fetch API Data', 'url' => 'https://api.example.com']))
+     * ->addJob(['type' => 'http', 'id' => 'fetch_api', 'name' => 'Fetch API Data', 'config' => ['url' => 'https://api.example.com']])
+     */
+    public function addJob($jobTypeOrClassOrInstance, string $id = null, string $name = null, array $config = []): self
+    {
+        $node = $this->createJobNode($jobTypeOrClassOrInstance, $id, $name, $config);
+        return $this->addNode($node);
+    }
+
+    /**
+     * Add a job with async execution mode
+     */
+    public function addAsyncJob($jobTypeOrClassOrInstance, string $id = null, string $name = null, array $config = []): self
+    {
+        $config['executionMode'] = 'async';
+        return $this->addJob($jobTypeOrClassOrInstance, $id, $name, $config);
+    }
+
+    /**
+     * Create a job node from various input types
+     */
+    protected function createJobNode($jobTypeOrClassOrInstance, string $id = null, string $name = null, array $config = []): NodeInterface
+    {
+        // If it's already a NodeInterface instance
+        if ($jobTypeOrClassOrInstance instanceof NodeInterface) {
+            return $jobTypeOrClassOrInstance;
+        }
+
+        // If it's an array configuration
+        if (is_array($jobTypeOrClassOrInstance)) {
+            return $this->createNodeFromArray($jobTypeOrClassOrInstance);
+        }
+
+        // If it's a class name
+        if (class_exists($jobTypeOrClassOrInstance)) {
+            return $this->createNodeFromClass($jobTypeOrClassOrInstance, $id, $name, $config);
+        }
+
+        // If it's a job type string
+        return $this->createNodeFromType($jobTypeOrClassOrInstance, $id, $name, $config);
+    }
+
+    /**
+     * Create node from array configuration
+     */
+    protected function createNodeFromArray(array $config): NodeInterface
+    {
+        $type = $config['type'] ?? $config['jobType'] ?? null;
+        if (!$type) {
+            throw new \InvalidArgumentException('Array configuration must contain "type" or "jobType"');
+        }
+
+        $id = $config['id'] ?? uniqid('node_', true);
+        $name = $config['name'] ?? $id;
+        $nodeConfig = $config['config'] ?? [];
+
+        return $this->createNodeFromType($type, $id, $name, $nodeConfig);
+    }
+
+    /**
+     * Create node from class name
+     */
+    protected function createNodeFromClass(string $className, string $id = null, string $name = null, array $config = []): NodeInterface
+    {
+        if (!class_exists($className)) {
+            throw new \ClassNotFoundException("Class '{$className}' not found");
+        }
+
+        $nodeConfig = array_merge($config, [
+            'id' => $id ?? uniqid('node_', true),
+            'name' => $name ?? $id ?? 'Unnamed Job'
+        ]);
+
+        $node = new $className($nodeConfig);
+        
+        if (!$node instanceof NodeInterface) {
+            throw new \InvalidArgumentException("Class '{$className}' must implement NodeInterface");
+        }
+
+        return $node;
+    }
+
+    /**
+     * Create node from job type
+     */
+    protected function createNodeFromType(string $type, string $id = null, string $name = null, array $config = []): NodeInterface
+    {
+        $registry = $this->getJobRegistry();
+        
+        $className = $registry->findJob($type);
+        if (!$className) {
+            throw new \InvalidArgumentException("Job type '{$type}' not found. Available types: " . implode(', ', $registry->getJobNames()));
+        }
+
+        return $this->createNodeFromClass($className, $id, $name, $config);
+    }
+
+    /**
+     * Get or create job registry
+     */
+    protected function getJobRegistry(): JobRegistry
+    {
+        if (self::$jobRegistry === null) {
+            self::$jobRegistry = new JobRegistry();
+        }
+        return self::$jobRegistry;
+    }
+
+    /**
+     * Set custom job registry
+     */
+    public static function setJobRegistry(JobRegistry $registry): void
+    {
+        self::$jobRegistry = $registry;
+    }
+
+    /**
+     * Get available job types
+     */
+    public function getAvailableJobs(): array
+    {
+        return $this->getJobRegistry()->getAllJobs();
     }
 
     public function removeNode(string $nodeId): self

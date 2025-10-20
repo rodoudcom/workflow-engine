@@ -4,6 +4,11 @@ namespace Rodoud\WorkflowEngine\Node;
 
 use Rodoud\WorkflowEngine\Core\AbstractNode;
 
+/**
+ * @Job(name="transform", description="Transform and manipulate data")
+ * @Job(name="data", description="Transform and manipulate data")
+ * @Job(name="map", description="Transform and manipulate data")
+ */
 class TransformNode extends AbstractNode
 {
     protected string $type = 'transform';
