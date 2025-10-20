@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Rodoud\\WorkflowEngine\\": "src/"
+            "Rodoud\\": "src/"
         }
     },
     "autoload-dev": {
