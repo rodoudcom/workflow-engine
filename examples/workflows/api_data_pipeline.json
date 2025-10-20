@@ -1,0 +1,125 @@
+{
+  "id": "api_data_pipeline",
+  "name": "API Data Pipeline",
+  "description": "Fetch data from multiple APIs and transform it",
+  "nodes": [
+    {
+      "id": "fetch_users",
+      "name": "Fetch Users",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "method": "GET",
+        "headers": {
+          "Accept": "application/json"
+        },
+        "timeout": 30,
+        "stopWorkflowOnFail": true
+      }
+    },
+    {
+      "id": "fetch_posts",
+      "name": "Fetch Posts",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "method": "GET",
+        "headers": {
+          "Accept": "application/json"
+        },
+        "timeout": 30,
+        "stopWorkflowOnFail": true
+      }
+    },
+    {
+      "id": "transform_users",
+      "name": "Transform Users",
+      "type": "transform",
+      "config": {
+        "operation": "map",
+        "mapping": {
+          "user_id": "id",
+          "name": "name",
+          "email": "email",
+          "company": "company.name",
+          "website": "website"
+        },
+        "stopWorkflowOnFail": true
+      }
+    },
+    {
+      "id": "transform_posts",
+      "name": "Transform Posts",
+      "type": "transform",
+      "config": {
+        "operation": "map",
+        "mapping": {
+          "post_id": "id",
+          "user_id": "userId",
+          "title": "title",
+          "body": "body"
+        },
+        "stopWorkflowOnFail": true
+      }
+    },
+    {
+      "id": "merge_data",
+      "name": "Merge User and Post Data",
+      "type": "code",
+      "config": {
+        "code": "$users = $context['nodes']['transform_users']['output'] ?? [];\n$posts = $context['nodes']['transform_posts']['output'] ?? [];\n\n$merged = [];\nforeach ($users as $user) {\n    $userPosts = array_filter($posts, function($post) use ($user) {\n        return $post['user_id'] == $user['user_id'];\n    });\n    \n    $merged[] = [\n        'user' => $user,\n        'posts' => array_values($userPosts),\n        'post_count' => count($userPosts)\n    ];\n}\n\nreturn ['merged_data' => $merged, 'total_users' => count($users), 'total_posts' => count($posts)];",
+        "language": "php",
+        "timeout": 30,
+        "stopWorkflowOnFail": true
+      }
+    },
+    {
+      "id": "save_results",
+      "name": "Save Results",
+      "type": "database",
+      "config": {
+        "operation": "insert",
+        "query": "INSERT INTO workflow_results (workflow_id, result_data, created_at) VALUES (:workflow_id, :result_data, NOW())",
+        "params": {
+          "workflow_id": "api_data_pipeline",
+          "result_data": "{{nodes.merge_data.output.merged_data}}"
+        },
+        "connection": {
+          "host": "localhost",
+          "port": 3306,
+          "database": "workflow_db",
+          "username": "user",
+          "password": "password",
+          "charset": "utf8mb4"
+        },
+        "stopWorkflowOnFail": false
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": "fetch_users",
+      "to": "transform_users"
+    },
+    {
+      "from": "fetch_posts",
+      "to": "transform_posts"
+    },
+    {
+      "from": "transform_users",
+      "to": "merge_data",
+      "fromOutput": "output",
+      "toInput": "users"
+    },
+    {
+      "from": "transform_posts",
+      "to": "merge_data",
+      "fromOutput": "output",
+      "toInput": "posts"
+    },
+    {
+      "from": "merge_data",
+      "to": "save_results"
+    }
+  ]
+}

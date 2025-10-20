@@ -1,0 +1,109 @@
+{
+  "id": "mixed_execution_pipeline",
+  "name": "Mixed Execution Pipeline",
+  "description": "Example workflow with mixed sync/async execution modes",
+  "nodes": [
+    {
+      "id": "task_a",
+      "name": "Task A: Log",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "method": "GET",
+        "executionMode": "sync",
+        "stopWorkflowOnFail": true,
+        "timeout": 30
+      }
+    },
+    {
+      "id": "task_b",
+      "name": "Task B: Fetch Products",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/posts",
+        "method": "GET",
+        "executionMode": "async",
+        "stopWorkflowOnFail": true,
+        "timeout": 30
+      }
+    },
+    {
+      "id": "task_c",
+      "name": "Task C: Fetch Users",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "method": "GET",
+        "executionMode": "async",
+        "stopWorkflowOnFail": true,
+        "timeout": 30
+      }
+    },
+    {
+      "id": "task_d",
+      "name": "Task D: Fetch Blogs",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/albums",
+        "method": "GET",
+        "executionMode": "async",
+        "stopWorkflowOnFail": true,
+        "timeout": 30
+      }
+    },
+    {
+      "id": "task_e",
+      "name": "Task E: Get Comments",
+      "type": "http",
+      "config": {
+        "url": "https://jsonplaceholder.typicode.com/comments",
+        "method": "GET",
+        "executionMode": "sync",
+        "stopWorkflowOnFail": true,
+        "timeout": 30
+      }
+    },
+    {
+      "id": "task_f",
+      "name": "Task F: End",
+      "type": "code",
+      "config": {
+        "code": "$products = $context[\"nodes\"][\"task_b\"][\"output\"] ?? [];\n$users = $context[\"nodes\"][\"task_c\"][\"output\"] ?? [];\n$blogs = $context[\"nodes\"][\"task_d\"][\"output\"] ?? [];\n$comments = $context[\"nodes\"][\"task_e\"][\"output\"] ?? [];\n\nreturn [\n    \"summary\" => [\n        \"products_count\" => count($products),\n        \"users_count\" => count($users),\n        \"blogs_count\" => count($blogs),\n        \"comments_count\" => count($comments),\n    ],\n    \"execution_time\" => date(\"Y-m-d H:i:s\"),\n    \"status\" => \"completed\"\n];",
+        "language": "php",
+        "executionMode": "sync",
+        "stopWorkflowOnFail": true,
+        "timeout": 30
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": "task_a",
+      "to": "task_b"
+    },
+    {
+      "from": "task_a",
+      "to": "task_c"
+    },
+    {
+      "from": "task_a",
+      "to": "task_d"
+    },
+    {
+      "from": "task_b",
+      "to": "task_e"
+    },
+    {
+      "from": "task_c",
+      "to": "task_f"
+    },
+    {
+      "from": "task_d",
+      "to": "task_f"
+    },
+    {
+      "from": "task_e",
+      "to": "task_f"
+    }
+  ]
+}
