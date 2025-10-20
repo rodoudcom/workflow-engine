@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\WorkflowEngine\SDK\WorkflowEngine;
-use App\WorkflowEngine\SDK\WorkflowBuilder;
+use Rodoud\WorkflowEngine\SDK\WorkflowEngine;
+use Rodoud\WorkflowEngine\SDK\WorkflowBuilder;
 
 // Initialize the workflow engine
 $engine = new WorkflowEngine([

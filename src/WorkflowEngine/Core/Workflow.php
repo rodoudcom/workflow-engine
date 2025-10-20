@@ -1,9 +1,9 @@
 <?php
 
-namespace App\WorkflowEngine\Core;
+namespace Rodoud\WorkflowEngine\Core;
 
-use App\WorkflowEngine\Interface\WorkflowInterface;
-use App\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
 
 class Workflow implements WorkflowInterface
 {

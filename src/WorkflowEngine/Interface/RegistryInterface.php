@@ -1,6 +1,6 @@
 <?php
 
-namespace App\WorkflowEngine\Interface;
+namespace Rodoud\WorkflowEngine\Interface;
 
 interface RegistryInterface
 {

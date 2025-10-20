@@ -1,8 +1,8 @@
 <?php
 
-namespace App\WorkflowEngine\Node;
+namespace Rodoud\WorkflowEngine\Node;
 
-use App\WorkflowEngine\Core\AbstractNode;
+use Rodoud\WorkflowEngine\Core\AbstractNode;
 
 class TransformNode extends AbstractNode
 {

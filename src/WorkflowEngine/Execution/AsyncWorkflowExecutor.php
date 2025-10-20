@@ -1,8 +1,8 @@
 <?php
 
-namespace App\WorkflowEngine\Execution;
+namespace Rodoud\WorkflowEngine\Execution;
 
-use App\WorkflowEngine\Interface\WorkflowInterface;
+use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
 use Amp\Parallel\Worker\Task;
 use Amp\Parallel\Worker\Worker;
 use Amp\Parallel\Worker\WorkerPool;
@@ -67,7 +67,7 @@ class WorkflowExecutionTask implements Task
     public function run(): array
     {
         // Reconstruct workflow from data
-        $workflow = \App\WorkflowEngine\Core\Workflow::fromArray($this->workflowData);
+        $workflow = \Rodoud\WorkflowEngine\Core\Workflow::fromArray($this->workflowData);
         
         // Create a sync executor for this task
         $executor = new WorkflowExecutor([], false);

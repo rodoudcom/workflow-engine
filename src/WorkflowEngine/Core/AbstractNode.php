@@ -1,8 +1,8 @@
 <?php
 
-namespace App\WorkflowEngine\Core;
+namespace Rodoud\WorkflowEngine\Core;
 
-use App\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
 
 abstract class AbstractNode implements NodeInterface
 {

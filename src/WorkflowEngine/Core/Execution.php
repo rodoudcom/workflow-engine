@@ -1,8 +1,8 @@
 <?php
 
-namespace App\WorkflowEngine\Core;
+namespace Rodoud\WorkflowEngine\Core;
 
-use App\WorkflowEngine\Interface\ExecutionInterface;
+use Rodoud\WorkflowEngine\Interface\ExecutionInterface;
 
 class Execution implements ExecutionInterface
 {

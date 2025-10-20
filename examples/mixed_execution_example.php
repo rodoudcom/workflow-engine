@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\WorkflowEngine\SDK\WorkflowEngine;
-use App\WorkflowEngine\SDK\WorkflowBuilder;
+use Rodoud\WorkflowEngine\SDK\WorkflowEngine;
+use Rodoud\WorkflowEngine\SDK\WorkflowBuilder;
 
 // Initialize the workflow engine with mixed execution support
 $engine = new WorkflowEngine([
@@ -169,7 +169,7 @@ if (method_exists($builder, 'getWorkflow')) {
     $workflow = $builder->getWorkflow();
     
     // Create dependency graph to analyze execution
-    $dependencyGraph = new \App\WorkflowEngine\Execution\DependencyGraph($workflow);
+    $dependencyGraph = new \Rodoud\WorkflowEngine\Execution\DependencyGraph($workflow);
     
     echo "Execution Levels: " . count($dependencyGraph->getExecutionLevels()) . "\n";
     echo "Parallel Groups: " . count($dependencyGraph->getParallelGroups()) . "\n";

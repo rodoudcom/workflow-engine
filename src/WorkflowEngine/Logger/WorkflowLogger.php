@@ -1,9 +1,9 @@
 <?php
 
-namespace App\WorkflowEngine\Logger;
+namespace Rodoud\WorkflowEngine\Logger;
 
-use App\WorkflowEngine\Interface\ExecutionInterface;
-use App\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Interface\ExecutionInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
 
 class WorkflowLogger
 {

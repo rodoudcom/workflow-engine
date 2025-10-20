@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\WorkflowEngine\SDK\WorkflowEngine;
+use Rodoud\WorkflowEngine\SDK\WorkflowEngine;
 
 // Initialize the workflow engine with async support
 $engine = new WorkflowEngine([

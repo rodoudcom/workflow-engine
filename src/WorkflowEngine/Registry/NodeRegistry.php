@@ -1,9 +1,9 @@
 <?php
 
-namespace App\WorkflowEngine\Registry;
+namespace Rodoud\WorkflowEngine\Registry;
 
-use App\WorkflowEngine\Interface\RegistryInterface;
-use App\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Interface\RegistryInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
 
 class NodeRegistry implements RegistryInterface
 {

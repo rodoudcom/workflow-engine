@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\WorkflowEngine\\": "src/"
+            "Rodoud\\WorkflowEngine\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\WorkflowEngine\\Tests\\": "tests/"
+            "Rodoud\\WorkflowEngine\\Tests\\": "tests/"
         }
     },
     "scripts": {

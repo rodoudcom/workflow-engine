@@ -1,10 +1,10 @@
 <?php
 
-namespace App\WorkflowEngine\SDK;
+namespace Rodoud\WorkflowEngine\SDK;
 
-use App\WorkflowEngine\Interface\WorkflowInterface;
-use App\WorkflowEngine\Interface\NodeInterface;
-use App\WorkflowEngine\Core\Workflow;
+use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Core\Workflow;
 
 class WorkflowBuilder
 {

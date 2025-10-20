@@ -24,8 +24,8 @@ require_once __DIR__ . '/src/WorkflowEngine/Config/WorkflowParser.php';
 require_once __DIR__ . '/src/WorkflowEngine/SDK/WorkflowBuilder.php';
 require_once __DIR__ . '/src/WorkflowEngine/SDK/WorkflowEngine.php';
 
-use App\WorkflowEngine\Execution\WorkflowExecutor;
-use App\WorkflowEngine\SDK\WorkflowBuilder;
+use Rodoud\WorkflowEngine\Execution\WorkflowExecutor;
+use Rodoud\WorkflowEngine\SDK\WorkflowBuilder;
 
 echo "Testing Workflow Engine Compatibility...\n";
 

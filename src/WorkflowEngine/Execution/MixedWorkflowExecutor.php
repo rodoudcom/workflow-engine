@@ -1,12 +1,13 @@
 <?php
 
-namespace App\WorkflowEngine\Execution;
+namespace Rodoud\WorkflowEngine\Execution;
 
-use App\WorkflowEngine\Interface\WorkflowInterface;
-use App\WorkflowEngine\Interface\ExecutionInterface;
-use App\WorkflowEngine\Interface\NodeInterface;
-use App\WorkflowEngine\Core\Execution;
-use App\WorkflowEngine\Context\WorkflowContext;
+use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
+use Rodoud\WorkflowEngine\Interface\ExecutionInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Core\Execution;
+use Rodoud\WorkflowEngine\Context\WorkflowContext;
+use Rodoud\WorkflowEngine\Logger\WorkflowLogger;
 use Amp\Parallel\Worker\Task;
 use Amp\Parallel\Worker\WorkerPool;
 use Amp\Promise;
@@ -17,11 +18,13 @@ class MixedWorkflowExecutor extends WorkflowExecutor
     protected DependencyGraph $dependencyGraph;
     protected array $nodeResults = [];
     protected array $runningNodes = [];
+    protected WorkflowLogger $logger;
 
     public function __construct(array $redisConfig = [], int $maxWorkers = 4)
     {
         parent::__construct($redisConfig, true);
         $this->workerPool = new WorkerPool($maxWorkers);
+        $this->logger = new WorkflowLogger($redisConfig, 'info');
     }
 
     public function execute(WorkflowInterface $workflow, array $initialContext = []): ExecutionInterface

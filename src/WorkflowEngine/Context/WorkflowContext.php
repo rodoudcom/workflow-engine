@@ -1,6 +1,6 @@
 <?php
 
-namespace App\WorkflowEngine\Context;
+namespace Rodoud\WorkflowEngine\Context;
 
 class WorkflowContext
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\WorkflowEngine\Execution;
+namespace Rodoud\WorkflowEngine\Execution;
 
-use App\WorkflowEngine\Interface\NodeInterface;
-use App\WorkflowEngine\Context\WorkflowContext;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Context\WorkflowContext;
 
 class WaitJoinHandler
 {

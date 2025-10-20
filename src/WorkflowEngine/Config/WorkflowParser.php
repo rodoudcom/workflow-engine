@@ -1,10 +1,10 @@
 <?php
 
-namespace App\WorkflowEngine\Config;
+namespace Rodoud\WorkflowEngine\Config;
 
-use App\WorkflowEngine\Interface\WorkflowInterface;
-use App\WorkflowEngine\Core\Workflow;
-use App\WorkflowEngine\Registry\NodeRegistry;
+use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
+use Rodoud\WorkflowEngine\Core\Workflow;
+use Rodoud\WorkflowEngine\Registry\NodeRegistry;
 
 class WorkflowParser
 {

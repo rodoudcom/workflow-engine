@@ -1,9 +1,9 @@
 <?php
 
-namespace App\WorkflowEngine\Execution;
+namespace Rodoud\WorkflowEngine\Execution;
 
-use App\WorkflowEngine\Interface\WorkflowInterface;
-use App\WorkflowEngine\Interface\NodeInterface;
+use Rodoud\WorkflowEngine\Interface\WorkflowInterface;
+use Rodoud\WorkflowEngine\Interface\NodeInterface;
 
 class DependencyGraph
 {
